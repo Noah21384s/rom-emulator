@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pokemon Emulator</title>
+</head>
+<body>
+<h1>Pokemon Emulator</h1>
+<input type="file" id="romInput" accept=".gb,.gbc">
+<button onclick="loadRom()">Load ROM</button>
+<button onclick="playGame()">Play Game</button>
+<div id="gameScreen"></div>
+
+<script src="GameBoyCore.js"></script>
+<script>
+let gb = null;
+
+function loadRom() {
+    const fileInput = document.getElementById('romInput');
+    const file = fileInput.files[0];
+    if (file) {
+        const reader = new FileReader();
+        reader.onload = function(event) {
+            const romData = new Uint8Array(event.target.result);
+            gb = new GameBoyCore(document.getElementById('gameScreen'), romData);
+            console.log("ROM loaded:", file.name);
+        };
+        reader.readAsArrayBuffer(file);
+    } else {
+        alert("Please select a ROM file.");
+    }
+}
+
+function playGame() {
+    if (gb) {
+        gb.stopEmulator = false;
+        gb.run();
+        console.log("Playing game...");
+    } else {
+        console.error("No ROM loaded!");
+    }
+}
+</script>
+</body>
+</html>
